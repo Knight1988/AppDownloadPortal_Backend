@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AppDownloadPortal_Backend.Model;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace AppDownloadPortal_Backend.Services
@@ -10,12 +12,14 @@ namespace AppDownloadPortal_Backend.Services
     public class VersionService
     {
         private readonly S3Service _s3Service;
+        private readonly ILogger<VersionService> _logger;
         private const string BucketName = "system-micromarket-app-download-portal";
         private const string AppBucketName = "system-micromarket-data";
 
-        public VersionService(S3Service s3Service)
+        public VersionService(S3Service s3Service, ILogger<VersionService> logger)
         {
             _s3Service = s3Service;
+            _logger = logger;
         }
 
         public async Task<List<AppVersion>> GetVersionAsync(string env)
@@ -50,7 +54,12 @@ namespace AppDownloadPortal_Backend.Services
         {
             var versions = await GetVersionOriginAsync(appVersion.Environment);
             var editVersion = versions.FirstOrDefault(p => p.VersionString == appVersion.VersionString);
-            if (editVersion == null) editVersion = appVersion;
+            if (editVersion == null)
+            {
+                editVersion = appVersion;
+                versions.Add(appVersion);
+                _logger.LogInformation("Version {VersionString} Added", appVersion.VersionString);
+            }
 
             editVersion.DisplayText = appVersion.DisplayText;
             var contents = JsonConvert.SerializeObject(versions, Formatting.Indented);
@@ -76,6 +85,24 @@ namespace AppDownloadPortal_Backend.Services
 
             appInstallerContent = appInstallerContent.Replace(versionFileName, defaultFileName);
             await _s3Service.WriteAllTextAsync(AppBucketName, $"Child-store/app/version/{appVersion.Environment}/{defaultFileName}", appInstallerContent);
+        }
+
+        public async Task DeleteVersionAsync(string env, string version)
+        {
+            var versions = await GetVersionOriginAsync(env);
+            var deleteVersion = versions.FirstOrDefault(p => p.VersionString == version);
+            if (deleteVersion != null)
+            {
+                versions.Remove(deleteVersion);
+                _logger.LogInformation("Deleted: {Version}", version);
+            }
+            else
+            {
+                _logger.LogInformation("Version {Version} not found", version);
+            }
+            
+            var contents = JsonConvert.SerializeObject(versions, Formatting.Indented);
+            await _s3Service.WriteAllTextAsync(BucketName, $"data/version.{env}.json", contents);
         }
     }
 }

@@ -38,6 +38,13 @@ namespace AppDownloadPortal_Backend.Controllers
             await _versionService.UpdateVersionAsync(appVersion);
         }
 
+        // DELETE api/env/version
+        [HttpDelete("{env}/{version}")]
+        public async Task Delete(string env, string version)
+        {
+            await _versionService.DeleteVersionAsync(env, version);
+        }
+
         // PUT api/version/default
         [HttpPut("default")]
         public async Task SetDefault([FromBody] AppVersion appVersion)

@@ -11,6 +11,17 @@
       "stage": "dev",
       "region": "ap-northeast-1",
       "deploymentBucket": "system-micromarket-app-download-portal",
+      "iamRoleStatements": [
+        {
+          "Effect": "Allow",
+          "Action": [
+            "s3:GetObject",
+            "s3:PutObject",
+            "s3:PutObjectAcl"
+          ],
+          "Resource": "arn:aws:s3:::system-micromarket-app-download-portal/*"
+        }
+      ],
       "versionFunctions": true,
       "deploymentBucketObject": {
         "name": "system-micromarket-app-download-portal"
@@ -81,6 +92,9 @@
                             "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/uwp-download-portal-dev*:*:*"
                           }
                         ]
+                      },
+                      {
+                        "$ref": "$[\"service\"][\"provider\"][\"iamRoleStatements\"][0]"
                       }
                     ]
                   }
@@ -107,7 +121,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "system-micromarket-app-download-portal",
-                "S3Key": "serverless/uwp-download-portal/dev/1625648161696-2021-07-07T08:56:01.696Z/bin/Release/netcoreapp3.1/hello.zip"
+                "S3Key": "serverless/uwp-download-portal/dev/1625731215154-2021-07-08T08:00:15.154Z/bin/Release/netcoreapp3.1/hello.zip"
               },
               "Handler": "AppDownloadPortal_Backend::AppDownloadPortal_Backend.LambdaEntryPoint::FunctionHandlerAsync",
               "Runtime": "dotnetcore3.1",
@@ -125,14 +139,14 @@
               "ApiLogGroup"
             ]
           },
-          "ApiLambdaVersionLmP9mzo25aa6oZnQgFRxIhzvbx59fjuCnHq2gdzXyA": {
+          "ApiLambdaVersionPIyKdOfTzy2GrYNHH41IcQRdavAVdo4Drb52vXaA": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "ApiLambdaFunction"
               },
-              "CodeSha256": "6n8FVooNpSu8pLjjGSudNT6RQUhNVYB05kzrCIxn7SU="
+              "CodeSha256": "KkFWrq4CTEi4wukfQAaMFzzSf//Rmtg8QQIk2Rm8aOY="
             }
           },
           "ApiGatewayRestApi": {
@@ -251,7 +265,7 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayDeployment1625648159920": {
+          "ApiGatewayDeployment1625731212909": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -312,7 +326,7 @@
           "ApiLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "ApiLambdaVersionLmP9mzo25aa6oZnQgFRxIhzvbx59fjuCnHq2gdzXyA"
+              "Ref": "ApiLambdaVersionPIyKdOfTzy2GrYNHH41IcQRdavAVdo4Drb52vXaA"
             },
             "Export": {
               "Name": "sls-uwp-download-portal-dev-ApiLambdaFunctionQualifiedArn"
@@ -369,7 +383,7 @@
         "memory": 1024,
         "runtime": "dotnetcore3.1",
         "vpc": {},
-        "versionLogicalId": "ApiLambdaVersionLmP9mzo25aa6oZnQgFRxIhzvbx59fjuCnHq2gdzXyA"
+        "versionLogicalId": "ApiLambdaVersionPIyKdOfTzy2GrYNHH41IcQRdavAVdo4Drb52vXaA"
       }
     },
     "configValidationMode": "warn",
@@ -385,7 +399,7 @@
       "package": {
         "individually": true,
         "deploymentBucket": "system-micromarket-app-download-portal",
-        "artifactDirectoryName": "serverless/uwp-download-portal/dev/1625648161696-2021-07-07T08:56:01.696Z"
+        "artifactDirectoryName": "serverless/uwp-download-portal/dev/1625731215154-2021-07-08T08:00:15.154Z"
       },
       "functions": {
         "$ref": "$[\"service\"][\"functions\"]"
@@ -396,7 +410,7 @@
   },
   "package": {
     "individually": true,
-    "artifactDirectoryName": "serverless/uwp-download-portal/dev/1625648161696-2021-07-07T08:56:01.696Z",
+    "artifactDirectoryName": "serverless/uwp-download-portal/dev/1625731215154-2021-07-08T08:00:15.154Z",
     "artifact": ""
   }
 }

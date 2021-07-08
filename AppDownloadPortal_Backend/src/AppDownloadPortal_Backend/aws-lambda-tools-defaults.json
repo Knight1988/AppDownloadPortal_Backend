@@ -9,7 +9,8 @@
   "region": "",
   "configuration": "Release",
   "framework": "netcoreapp3.1",
-  "s3-prefix": "AppDownloadPortal_Backend/",
+  "s3-prefix": "serverless/",
   "template": "serverless.yml",
-  "template-parameters": ""
+  "template-parameters": "",
+  "stack-name": "uwp-download-portal-dev"
 }
